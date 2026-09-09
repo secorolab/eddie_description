@@ -1,0 +1,143 @@
+<mujoco model="eddie_mobile_platform">
+  <!-- Meshes are shared with the URDF; export them from the CAD with
+       export_step_meshes.py and export_torso.py.  base_link is +x forward, +y left.
+       The meshes are CAD y-up, hence quat .5 .5 .5 .5 on every geom; the right-hand
+       drive units are that same part half a turn about the pivot, hence .5 .5 -.5 -.5. -->
+  <compiler angle="radian" inertiafromgeom="false" meshdir="../meshes"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+    <headlight diffuse="0.4 0.4 0.4" ambient="0.3 0.3 0.3" specular="0.2 0.2 0.2"/>
+    <map znear="0.01" zfar="20"/>
+    <rgba haze="0.15 0.2 0.25 1"/>
+  </visual>
+  <default>
+    <joint damping="0.1" armature="0.002"/>
+    <geom contype="0" conaffinity="0"/>
+  </default>
+  <asset>
+    <texture name="sky" type="skybox" builtin="gradient" rgb1="0.15 0.25 0.4" rgb2="0.75 0.85 0.95" width="512" height="512"/>
+    <texture name="floor_grid" type="2d" builtin="checker" rgb1="0.12 0.14 0.16" rgb2="0.18 0.2 0.22" width="512" height="512" mark="cross" markrgb="0.35 0.38 0.4"/>
+    <material name="floor" texture="floor_grid" texrepeat="4 4" texuniform="true" reflectance="0.15"/>
+    <material name="m_casing" rgba="0.25 0.25 0.26 1" specular="0.15" shininess="0.12"/>
+    <material name="m_cover" rgba="0.898 0.918 0.929 1" specular="0.35" shininess="0.3"/>
+    <material name="m_lidar" rgba="0.792 0.82 0.933 1" specular="0.3" shininess="0.25"/>
+    <material name="m_mount" rgba="0.42 0.42 0.43 1" specular="0.3" shininess="0.3"/>
+    <material name="m_drive" rgba="0.35 0.35 0.35 1" specular="0.3" shininess="0.25"/>
+    <material name="m_wheel" rgba="0.996 0.996 1 1" specular="0.35" shininess="0.3"/>
+    <material name="m_tyre" rgba="0.251 0.251 0.251 1" specular="0.12" shininess="0.1"/>
+    <mesh name="casing" file="casing.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="panel" file="panel.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="cover" file="cover.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="lidar" file="lidar.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="torso" file="torso.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="torso_mounts" file="torso_mounts.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="drive" file="drive.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wheel_a" file="wheel_a.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wheel_b" file="wheel_b.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="tyre_a" file="tyre_a.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="tyre_b" file="tyre_b.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <worldbody>
+    <light name="key" pos="1.5 -1.5 3" dir="-0.4 0.4 -1" directional="true" diffuse="1 0.95 0.85" castshadow="true"/>
+    <light name="fill" pos="-2 1 1.5" dir="0.7 -0.3 -0.5" directional="true" diffuse="0.35 0.45 0.7"/>
+    <geom name="floor" type="plane" size="5 5 0.1" material="floor" friction="1 0.005 0.0001" contype="1" conaffinity="1"/>
+    <body name="base" pos="0 0 0.218">
+      <freejoint/>
+      <!-- Base and torso, plus the two 0.16 kg laser scanners the URDF carries as
+           their own links, with their parallel-axis terms. -->
+      <inertial pos="0 0 0.0833" mass="76.7577" diaginertia="4.147165 4.133063 3.398081"/>
+      <geom type="mesh" mesh="casing" material="m_casing" quat="0.5 0.5 0.5 0.5"/>
+      <geom type="mesh" mesh="panel" material="m_casing" quat="0.5 0.5 0.5 0.5"/>
+      <geom type="mesh" mesh="cover" material="m_cover" quat="0.5 0.5 0.5 0.5"/>
+      <geom type="mesh" mesh="lidar" material="m_lidar" quat="0.5 0.5 0.5 0.5"/>
+      <!-- Tower up to the arm mounts; placed from "Full assembly Robot 7_5D.STEP". -->
+      <geom type="mesh" mesh="torso" material="m_cover" pos="-0.1738 0.0003 0.4184" quat="0.5 0.5 0.5 0.5"/>
+      <geom type="mesh" mesh="torso_mounts" material="m_mount" pos="-0.1738 0.0003 0.4184" quat="0.5 0.5 0.5 0.5"/>
+      <!-- the frame the drive positions and the odometry twist refer to -->
+      <body name="base_link" pos="0 0 0"/>
+      <body name="front_left_caster" pos="0.18813 0.20748 -0.1273">
+        <joint name="pivot_front_left" type="hinge" axis="0 0 1"/>
+        <inertial pos="0 -0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
+        <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 -0.5 -0.5"/>
+        <body pos="0.040500 -0.010108 -0.036587">
+          <joint name="wheel_front_left_right" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
+        </body>
+        <body pos="-0.040500 -0.009890 -0.036587">
+          <joint name="wheel_front_left_left" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_b" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
+        </body>
+      </body>
+      <body name="front_right_caster" pos="0.18813 -0.20752 -0.1273">
+        <joint name="pivot_front_right" type="hinge" axis="0 0 1"/>
+        <inertial pos="0 0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
+        <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 0.5 0.5"/>
+        <body pos="-0.040500 0.010108 -0.036587">
+          <joint name="wheel_front_right_right" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
+        </body>
+        <body pos="0.040500 0.009890 -0.036587">
+          <joint name="wheel_front_right_left" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_b" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
+        </body>
+      </body>
+      <body name="rear_right_caster" pos="-0.18787 -0.20752 -0.1273">
+        <joint name="pivot_rear_right" type="hinge" axis="0 0 1"/>
+        <inertial pos="0 0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
+        <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 0.5 0.5"/>
+        <body pos="-0.040500 0.010108 -0.036587">
+          <joint name="wheel_rear_right_right" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
+        </body>
+        <body pos="0.040500 0.009890 -0.036587">
+          <joint name="wheel_rear_right_left" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_b" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
+        </body>
+      </body>
+      <body name="rear_left_caster" pos="-0.18787 0.20748 -0.1273">
+        <joint name="pivot_rear_left" type="hinge" axis="0 0 1"/>
+        <inertial pos="0 -0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
+        <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 -0.5 -0.5"/>
+        <body pos="0.040500 -0.010108 -0.036587">
+          <joint name="wheel_rear_left_right" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
+        </body>
+        <body pos="-0.040500 -0.009890 -0.036587">
+          <joint name="wheel_rear_left_left" type="hinge" axis="-1 0 0"/>
+          <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
+          <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
+          <geom type="mesh" mesh="wheel_b" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="pivot_front_left" joint="pivot_front_left" gear="4" ctrlrange="-10 10"/>
+    <motor name="pivot_rear_left" joint="pivot_rear_left" gear="4" ctrlrange="-10 10"/>
+    <motor name="pivot_rear_right" joint="pivot_rear_right" gear="4" ctrlrange="-10 10"/>
+    <motor name="pivot_front_right" joint="pivot_front_right" gear="4" ctrlrange="-10 10"/>
+    <motor name="wheel_front_left_right" joint="wheel_front_left_right" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_front_left_left" joint="wheel_front_left_left" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_rear_left_right" joint="wheel_rear_left_right" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_rear_left_left" joint="wheel_rear_left_left" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_rear_right_right" joint="wheel_rear_right_right" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_rear_right_left" joint="wheel_rear_right_left" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_front_right_right" joint="wheel_front_right_right" gear="1" ctrlrange="-12 12"/>
+    <motor name="wheel_front_right_left" joint="wheel_front_right_left" gear="1" ctrlrange="-12 12"/>
+  </actuator>
+</mujoco>

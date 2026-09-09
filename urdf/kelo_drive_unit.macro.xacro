@@ -4,9 +4,11 @@
     <!-- Include macro files -->
     <xacro:include filename="$(find eddie_description)/urdf/kelo_hub_wheel.macro.xacro" />
 
+    <!-- The pivot is the unit's slew-bearing axis; the 10.1 mm castor offset that
+         lets the wheel pair steer it sits in the wheel origins, not the pivot. -->
     <xacro:macro name="kelo_drive_unit"
-        params="parent use_ros2_control use_gz_sim use_kelo_tulip struct_prefix *attachment_origin
-    struct_wrt_attachment_rpy">
+        params="parent use_ros2_control use_gz_sim use_kelo_tulip struct_prefix
+    mirrored:=false *attachment_origin">
 
         <!-- pivot joint type based on use_kelo_tulip -->
         <xacro:if value="${use_kelo_tulip}">
@@ -18,33 +20,21 @@
 
         <!-- Properties -->
         <xacro:property name="mesh_package" value="eddie_description" />
-        <xacro:property name="struct_mesh_file" value="kelo_drive.stl" />
-        <xacro:property name="struct_attachment_mesh_file" value="kelo_drive_attachments.stl" />
+        <xacro:property name="struct_mesh_file" value="drive.stl" />
 
-        <!-- struct -->
-        <xacro:property name="struct_wrt_attachment_origin">
-            <origin xyz="-0.0100 -0.0006 -0.0641" rpy="${struct_wrt_attachment_rpy}" />
-        </xacro:property>
+        <!-- The mirrored units are the same part half a turn about the pivot. -->
+        <xacro:if value="${mirrored}">
+            <xacro:property name="mesh_rpy" value="1.5708 0 -1.5708" />
+            <xacro:property name="flip" value="-1" />
+        </xacro:if>
+        <xacro:unless value="${mirrored}">
+            <xacro:property name="mesh_rpy" value="1.5708 0 1.5708" />
+            <xacro:property name="flip" value="1" />
+        </xacro:unless>
 
         <!-- Links -->
-        <link name="${struct_prefix}attachment_link">
-            <visual>
-                <origin rpy="0 0 0" xyz="0 0 0" />
-                <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${struct_attachment_mesh_file}" />
-                </geometry>
-                <material name="metallic_silver" />
-            </visual>
-            <collision>
-                <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${struct_attachment_mesh_file}" />
-                </geometry>
-            </collision>
-            <inertial>
-                <mass value="0.5" />
-                <inertia ixx="0.00042" ixy="0" ixz="0" iyy="0.00042" iyz="0" izz="0.0008" />
-            </inertial>
-        </link>
+        <!-- massless: a frame; the unit's mass is on the part that turns -->
+        <link name="${struct_prefix}attachment_link" />
 
         <!-- attachment joint -->
         <joint name="${struct_prefix}attachment_joint" type="fixed">
@@ -55,20 +45,15 @@
 
         <link name="${struct_prefix}struct_link">
             <visual>
-                <origin rpy="0 0 0" xyz="0 0 0" />
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${struct_mesh_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/${struct_mesh_file}" scale="0.001 0.001 0.001" />
                 </geometry>
-                <material name="metallic_silver" />
+                <material name="drive_grey" />
             </visual>
-            <collision>
-                <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${struct_mesh_file}" />
-                </geometry>
-            </collision>
             <inertial>
                 <mass value="1.392" />
-                <origin xyz="0 0 0.006" rpy="0 0 0" />
+                <origin xyz="0 ${flip * 0.0101} 0" rpy="0 0 0" />
                 <inertia ixx="0.004574163" ixy="0" ixz="0" iyy="0.004344228" iyz="0"
                     izz="0.004640438" />
             </inertial>
@@ -78,7 +63,7 @@
         <joint name="${struct_prefix}pivot_joint" type="${pivot_joint_type}">
             <parent link="${struct_prefix}attachment_link" />
             <child link="${struct_prefix}struct_link" />
-            <xacro:insert_block name="struct_wrt_attachment_origin" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
             <axis xyz="0 0 1" />
             <dynamics damping="0.1" friction="0.1" />
         </joint>
@@ -107,11 +92,14 @@
         <!-- right wheel -->
         <xacro:property name="right_wheel_prefix" value="r_wheel_" />
         <xacro:property name="right_wheel_origin">
-            <origin xyz="0.0008 0.0407 -0.0366" rpy="-1.5708 0 0" />
+            <origin xyz="${flip * -0.040500} ${flip * 0.010108} -0.036587" rpy="0 0 0" />
         </xacro:property>
 
         <xacro:kelo_hub_wheel wheel_prefix="${struct_prefix}${right_wheel_prefix}"
             parent="${struct_prefix}struct_link"
+            wheel_mesh="wheel_a.stl"
+            tyre_mesh="tyre_a.stl"
+            mesh_rpy="${mesh_rpy}"
             use_ros2_control="${use_ros2_control}"
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}">
@@ -121,11 +109,14 @@
         <!-- left wheel -->
         <xacro:property name="left_wheel_prefix" value="l_wheel_" />
         <xacro:property name="left_wheel_origin">
-            <origin xyz="0.0008 -0.0403 -0.0366" rpy="1.5708 3.1416 0" />
+            <origin xyz="${flip * 0.040500} ${flip * 0.009890} -0.036587" rpy="0 0 0" />
         </xacro:property>
 
         <xacro:kelo_hub_wheel wheel_prefix="${struct_prefix}${left_wheel_prefix}"
             parent="${struct_prefix}struct_link"
+            wheel_mesh="wheel_b.stl"
+            tyre_mesh="tyre_b.stl"
+            mesh_rpy="${mesh_rpy}"
             use_ros2_control="${use_ros2_control}"
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}">

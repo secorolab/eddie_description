@@ -1,6 +1,36 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="eddie_materials">
 
+    <!-- Part colours, from meshes/colors.json and meshes/torso_colors.json. -->
+    <material name="casing_grey">
+        <color rgba="0.25 0.25 0.26 1.0" />
+    </material>
+
+    <material name="cover_light">
+        <color rgba="0.898 0.918 0.929 1.0" />
+    </material>
+
+    <material name="lidar_grey">
+        <color rgba="0.792 0.82 0.933 1.0" />
+    </material>
+
+    <material name="mount_grey">
+        <color rgba="0.42 0.42 0.43 1.0" />
+    </material>
+
+    <material name="drive_grey">
+        <color rgba="0.35 0.35 0.35 1.0" />
+    </material>
+
+    <material name="wheel_light">
+        <color rgba="0.996 0.996 1.0 1.0" />
+    </material>
+
+    <material name="tyre_dark">
+        <color rgba="0.251 0.251 0.251 1.0" />
+    </material>
+
+    <!-- referenced by the arm and gripper descriptions -->
     <material name="metallic_silver">
         <color rgba="0.5 0.5 0.5 1.0" />
     </material>

@@ -8,40 +8,35 @@
 
         <!-- Properties -->
         <xacro:property name="mesh_package" value="eddie_description" />
-        <xacro:property name="eddie_base_file" value="kelo_base.stl" />
-        <xacro:property name="eddie_torso_file" value="kelo_torso.stl" />
 
-        <!-- wheel unit attachments -->
+        <!-- The CAD meshes are y-up and in millimetres. -->
+        <xacro:property name="mesh_rpy" value="1.5708 0 1.5708" />
+        <xacro:property name="mesh_scale" value="0.001 0.001 0.001" />
+
+        <!-- wheel unit attachments, on the units' slew-bearing axes -->
         <xacro:property name="front_left_attachment_origin">
-            <origin xyz="0.2078 0.1880 -0.0632" rpy="0 0 1.5708" />
+            <origin xyz="0.18813 0.20748 -0.1273" rpy="0 0 0" />
         </xacro:property>
 
         <xacro:property name="rear_left_attachment_origin">
-            <origin xyz="-0.2078 0.1880 -0.0632" rpy="0 0 1.5708" />
+            <origin xyz="-0.18787 0.20748 -0.1273" rpy="0 0 0" />
         </xacro:property>
 
         <xacro:property name="rear_right_attachment_origin">
-            <origin xyz="-0.2078 -0.1880 -0.0632" rpy="0 0 -1.5708" />
+            <origin xyz="-0.18787 -0.20752 -0.1273" rpy="0 0 0" />
         </xacro:property>
 
         <xacro:property name="front_right_attachment_origin">
-            <origin xyz="0.2078 -0.1880 -0.0632" rpy="0 0 -1.5708" />
+            <origin xyz="0.18813 -0.20752 -0.1273" rpy="0 0 0" />
         </xacro:property>
-
-        <xacro:property name="front_right_struct_wrt_attachment_rpy" value="0 0 -1.5708" />
-        <xacro:property name="front_left_struct_wrt_attachment_rpy" value="0 0 1.5708" />
-        <xacro:property name="rear_right_struct_wrt_attachment_rpy" value="0 0 -1.5708" />
-        <xacro:property name="rear_left_struct_wrt_attachment_rpy" value="0 0 1.5708" />
 
         <!-- base link origin -->
         <xacro:property name="base_link_origin">
             <origin xyz="0 0 0.2164" rpy="0 0 0" />
         </xacro:property>
 
-        <!-- torso origin -->
-        <xacro:property name="torso_origin_wrt_base_link">
-            <origin xyz="-0.1738 0.0003 0.4184" rpy="0 0 1.5708" />
-        </xacro:property>
+        <!-- torso origin, from "Full assembly Robot 7_5D.STEP" -->
+        <xacro:property name="torso_xyz" value="-0.1738 0.0003 0.4184" />
 
         <!-- arm attachment origins -->
         <xacro:property name="left_arm_attachment_origin">
@@ -62,30 +57,61 @@
         <link name="${robot_prefix}base_link">
             <!-- base -->
             <visual>
-                <origin rpy="0 0 0" xyz="0 0 0" />
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${eddie_base_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/casing.stl" scale="${mesh_scale}" />
                 </geometry>
-                <material name="light_gray" />
+                <material name="casing_grey" />
             </visual>
-            <collision>
+            <visual>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${eddie_base_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/panel.stl" scale="${mesh_scale}" />
+                </geometry>
+                <material name="casing_grey" />
+            </visual>
+            <visual>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://${mesh_package}/meshes/cover.stl" scale="${mesh_scale}" />
+                </geometry>
+                <material name="cover_light" />
+            </visual>
+            <visual>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://${mesh_package}/meshes/lidar.stl" scale="${mesh_scale}" />
+                </geometry>
+                <material name="lidar_grey" />
+            </visual>
+
+            <!-- only the outer shell can hit the world -->
+            <collision>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://${mesh_package}/meshes/casing.stl" scale="${mesh_scale}" />
                 </geometry>
             </collision>
 
             <!-- torso -->
             <visual>
-                <xacro:insert_block name="torso_origin_wrt_base_link" />
+                <origin rpy="${mesh_rpy}" xyz="${torso_xyz}" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${eddie_torso_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/torso.stl" scale="${mesh_scale}" />
                 </geometry>
-                <material name="metallic_silver" />
+                <material name="cover_light" />
+            </visual>
+            <visual>
+                <origin rpy="${mesh_rpy}" xyz="${torso_xyz}" />
+                <geometry>
+                    <mesh filename="package://${mesh_package}/meshes/torso_mounts.stl" scale="${mesh_scale}" />
+                </geometry>
+                <material name="mount_grey" />
             </visual>
             <collision>
-                <xacro:insert_block name="torso_origin_wrt_base_link" />
+                <origin rpy="${mesh_rpy}" xyz="${torso_xyz}" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${eddie_torso_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/torso.stl" scale="${mesh_scale}" />
                 </geometry>
             </collision>
 
@@ -186,7 +212,7 @@
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}"
             struct_prefix="${robot_prefix}front_left_drive_"
-            struct_wrt_attachment_rpy="${front_left_struct_wrt_attachment_rpy}">
+            mirrored="true">
             <xacro:insert_block name="front_left_attachment_origin" />
         </xacro:kelo_drive_unit>
 
@@ -197,7 +223,7 @@
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}"
             struct_prefix="${robot_prefix}rear_left_drive_"
-            struct_wrt_attachment_rpy="${rear_left_struct_wrt_attachment_rpy}">
+            mirrored="true">
             <xacro:insert_block name="rear_left_attachment_origin" />
         </xacro:kelo_drive_unit>
 
@@ -208,7 +234,7 @@
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}"
             struct_prefix="${robot_prefix}rear_right_drive_"
-            struct_wrt_attachment_rpy="${front_right_struct_wrt_attachment_rpy}">
+            mirrored="false">
             <xacro:insert_block name="rear_right_attachment_origin" />
         </xacro:kelo_drive_unit>
 
@@ -219,7 +245,7 @@
             use_gz_sim="${use_gz_sim}"
             use_kelo_tulip="${use_kelo_tulip}"
             struct_prefix="${robot_prefix}front_right_drive_"
-            struct_wrt_attachment_rpy="${rear_right_struct_wrt_attachment_rpy}">
+            mirrored="false">
             <xacro:insert_block name="front_right_attachment_origin" />
         </xacro:kelo_drive_unit>
 

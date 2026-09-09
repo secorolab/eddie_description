@@ -1,0 +1,101 @@
+[
+  {
+    "part": "casing",
+    "file": "casing.stl",
+    "rgb": [
+      0.25,
+      0.25,
+      0.26
+    ],
+    "hex": "404042",
+    "triangles": 29849
+  },
+  {
+    "part": "cover",
+    "file": "cover.stl",
+    "rgb": [
+      0.898,
+      0.9176,
+      0.9294
+    ],
+    "hex": "e5eaed",
+    "triangles": 7396
+  },
+  {
+    "part": "lidar",
+    "file": "lidar.stl",
+    "rgb": [
+      0.7922,
+      0.8196,
+      0.9333
+    ],
+    "hex": "cad1ee",
+    "triangles": 38451
+  },
+  {
+    "part": "panel",
+    "file": "panel.stl",
+    "rgb": [
+      0.25,
+      0.25,
+      0.26
+    ],
+    "hex": "404042",
+    "triangles": 7509
+  },
+  {
+    "part": "drive",
+    "file": "drive.stl",
+    "rgb": [
+      0.35,
+      0.35,
+      0.35
+    ],
+    "hex": "595959",
+    "triangles": 73397
+  },
+  {
+    "part": "tyre_a",
+    "file": "tyre_a.stl",
+    "rgb": [
+      0.251,
+      0.251,
+      0.251
+    ],
+    "hex": "404040",
+    "triangles": 550
+  },
+  {
+    "part": "wheel_a",
+    "file": "wheel_a.stl",
+    "rgb": [
+      0.9961,
+      0.9961,
+      1.0
+    ],
+    "hex": "fefeff",
+    "triangles": 26638
+  },
+  {
+    "part": "tyre_b",
+    "file": "tyre_b.stl",
+    "rgb": [
+      0.251,
+      0.251,
+      0.251
+    ],
+    "hex": "404040",
+    "triangles": 550
+  },
+  {
+    "part": "wheel_b",
+    "file": "wheel_b.stl",
+    "rgb": [
+      0.9961,
+      0.9961,
+      1.0
+    ],
+    "hex": "fefeff",
+    "triangles": 26643
+  }
+]

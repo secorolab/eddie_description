@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- The mobile base without the arms. Same meshes, kinematics and inertials as
+     mujoco/mobile_platform.xml. -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="eddie_base">
+
+    <xacro:arg name="robot_prefix" default="" />
+    <xacro:arg name="use_ros2_control" default="false" />
+    <xacro:arg name="use_gz_sim" default="false" />
+    <xacro:arg name="use_kelo_tulip" default="true" />
+
+    <xacro:include filename="$(find eddie_description)/urdf/materials.xacro" />
+    <xacro:include filename="$(find eddie_description)/urdf/eddie_base.macro.xacro" />
+
+    <xacro:eddie_base
+        robot_prefix="$(arg robot_prefix)"
+        use_ros2_control="$(arg use_ros2_control)"
+        use_gz_sim="$(arg use_gz_sim)"
+        use_kelo_tulip="$(arg use_kelo_tulip)" />
+
+</robot>

@@ -2,11 +2,10 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kelo_hub_wheel">
 
     <xacro:macro name="kelo_hub_wheel"
-        params="wheel_prefix parent *wheel_origin use_ros2_control use_gz_sim use_kelo_tulip">
+        params="wheel_prefix parent *wheel_origin wheel_mesh tyre_mesh mesh_rpy
+    use_ros2_control use_gz_sim use_kelo_tulip">
 
-        <!-- Properties -->
         <xacro:property name="mesh_package" value="eddie_description" />
-        <xacro:property name="wheel_mesh_file" value="hub_wheel.stl" />
 
         <!-- wheel joint type based on use_kelo_tulip -->
         <xacro:if value="${use_kelo_tulip}">
@@ -19,15 +18,25 @@
         <!-- Links -->
         <link name="${wheel_prefix}link">
             <visual>
-                <origin rpy="0 0 0" xyz="0 0 0" />
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${wheel_mesh_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/${wheel_mesh}" scale="0.001 0.001 0.001" />
                 </geometry>
-                <material name="almost_black" />
+                <material name="wheel_light" />
             </visual>
-            <collision>
+            <visual>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="package://${mesh_package}/meshes/${wheel_mesh_file}" />
+                    <mesh filename="package://${mesh_package}/meshes/${tyre_mesh}" scale="0.001 0.001 0.001" />
+                </geometry>
+                <material name="tyre_dark" />
+            </visual>
+
+            <!-- only the tread ring touches the ground -->
+            <collision>
+                <origin rpy="${mesh_rpy}" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://${mesh_package}/meshes/${tyre_mesh}" scale="0.001 0.001 0.001" />
                 </geometry>
             </collision>
 
@@ -40,11 +49,12 @@
                 </friction>
             </surface>
 
+            <!-- spin axis is x, so the polar moment is ixx -->
             <inertial>
                 <mass value="1.563" />
-                <origin rpy="0 0 0" xyz="0 0.00003 -0.00044" />
-                <inertia ixx="0.001012837" ixy="0" ixz="0" iyy="0.001013130" iyz="0"
-                    izz="0.001579986" />
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <inertia ixx="0.001579986" ixy="0" ixz="0" iyy="0.001012837" iyz="0"
+                    izz="0.001013130" />
             </inertial>
         </link>
 
@@ -53,7 +63,7 @@
             <parent link="${parent}" />
             <child link="${wheel_prefix}link" />
             <xacro:insert_block name="wheel_origin" />
-            <axis xyz="0 0 1" />
+            <axis xyz="-1 0 0" />
             <dynamics damping="0.1" friction="0.1" />
         </joint>
 
@@ -90,4 +100,5 @@
         </xacro:if>
 
     </xacro:macro>
+
 </robot>

@@ -1,0 +1,24 @@
+[
+  {
+    "part": "torso",
+    "file": "torso.stl",
+    "rgb": [
+      0.898,
+      0.9176,
+      0.9294
+    ],
+    "hex": "e5eaed",
+    "triangles": 139466
+  },
+  {
+    "part": "torso_mounts",
+    "file": "torso_mounts.stl",
+    "rgb": [
+      0.42,
+      0.42,
+      0.43
+    ],
+    "hex": "6b6b6e",
+    "triangles": 7008
+  }
+]

@@ -59,8 +59,10 @@ Gripper not added.
 
 ## ROS Independent
 
-- The URDF and the mesh files for the whole Eddie robot including arms and Robotiq-2F-85 gripper are
-  available in the [eddie_urdf](eddie_urdf) folder.
+- A MuJoCo model of the mobile base, [mujoco/mobile_platform.xml](mujoco/mobile_platform.xml),
+  built from the same meshes and the same kinematics and inertial data as the URDF. Its drive
+  and wheel frames agree with the URDF's to below a micrometre. Export the meshes from the CAD
+  with `mujoco/export_step_meshes.py` and `mujoco/export_torso.py`.
 
 ## Eddie
 
