@@ -38,12 +38,14 @@ from OCP.gp import gp_Trsf, gp_Vec
 
 # STEP coordinates are millimetres, y up.
 BASE_ORIGIN = (272.0, 398.7, 444.0)
-# The unit's slew-bearing axis, 10.11 mm behind the wheel axle: that offset is
-# the castor offset.
+# The unit's slew-bearing axis, 10.00 mm behind the wheel axle: that offset is
+# the castor offset.  Both wheel origins sit on the tyres' common revolution axis
+# (74.479, 234.777), read from the STEP's toroidal faces: a tenth of a millimetre
+# off that axis makes an eccentric wheel that lifts its partner once per turn.
 PIVOT_ORIGIN = (64.48, 271.4, 256.13)
 WHEEL_ORIGINS = {
-    "a": (74.588, 234.813, 215.630),
-    "b": (74.370, 234.813, 296.630),
+    "a": (74.479, 234.777, 215.630),
+    "b": (74.479, 234.777, 296.630),
 }
 # The four drive units are one part placed four times, so only this one is exported.
 MODULE_LABEL = 4
@@ -66,9 +68,14 @@ TYRE_HEX = "404040"
 DEFAULT_RGB = (0.6, 0.6, 0.6)
 # MuJoCo's STL decoder rejects a mesh with more than 200000 triangles.
 MAX_TRIANGLES = 180_000
-# Chord tolerance per part; the drive unit is mostly hidden.
-DEFLECTION = {"drive": 8.0}
+# Chord tolerance per part; the drive unit is mostly hidden.  The tyres are the
+# contact geometry: at the default tolerance they come out as 27-gons whose
+# 0.35 mm facets exceed the contact penetration, so a unit's two wheels unload
+# in turn and slip, which drifts the platform and the odometry with it.
+DEFLECTION = {"drive": 8.0, "tyre_a": 0.05, "tyre_b": 0.05}
 DEFAULT_DEFLECTION = 5.0
+ANGULAR_DEFLECTION = {"tyre_a": 0.05, "tyre_b": 0.05}  # [rad]
+DEFAULT_ANGULAR_DEFLECTION = 0.5
 
 
 def compound(shapes):
@@ -124,11 +131,11 @@ def dominant_rgb(groups):
     return max(groups, key=lambda rgb: sum(area(face) for face in groups[rgb]))
 
 
-def write_stl(faces, origin, path, deflection):
+def write_stl(faces, origin, path, deflection, angular):
     transform = gp_Trsf()
     transform.SetTranslation(gp_Vec(*(-value for value in origin)))
     shape = BRepBuilderAPI_Transform(compound(faces), transform, True).Shape()
-    BRepMesh_IncrementalMesh(shape, deflection, False, 0.5, True)
+    BRepMesh_IncrementalMesh(shape, deflection, False, angular, True)
     writer = StlAPI_Writer()
     writer.ASCIIMode = False
     if not writer.Write(shape, str(path)):
@@ -146,7 +153,8 @@ def write_part(name, groups, origin, output_dir, manifest, report):
     rgb = PAINT.get(name) or dominant_rgb(groups)
     faces = [face for group in groups.values() for face in group]
     deflection = DEFLECTION.get(name, DEFAULT_DEFLECTION)
-    count = write_stl(faces, origin, output_dir / f"{name}.stl", deflection)
+    angular = ANGULAR_DEFLECTION.get(name, DEFAULT_ANGULAR_DEFLECTION)
+    count = write_stl(faces, origin, output_dir / f"{name}.stl", deflection, angular)
     if count > MAX_TRIANGLES:
         raise RuntimeError(f"{name}.stl has {count} triangles, over MuJoCo's mesh limit")
     manifest.append({"part": name, "file": f"{name}.stl", "rgb": [round(c, 4) for c in rgb],

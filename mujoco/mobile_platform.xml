@@ -60,13 +60,13 @@
         <joint name="pivot_front_left" type="hinge" axis="0 0 1"/>
         <inertial pos="0 -0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
         <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 -0.5 -0.5"/>
-        <body pos="0.040500 -0.010108 -0.036587">
+        <body pos="0.040500 -0.010000 -0.036623">
           <joint name="wheel_front_left_right" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
           <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
         </body>
-        <body pos="-0.040500 -0.009890 -0.036587">
+        <body pos="-0.040500 -0.010000 -0.036623">
           <joint name="wheel_front_left_left" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
@@ -77,13 +77,13 @@
         <joint name="pivot_front_right" type="hinge" axis="0 0 1"/>
         <inertial pos="0 0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
         <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 0.5 0.5"/>
-        <body pos="-0.040500 0.010108 -0.036587">
+        <body pos="-0.040500 0.010000 -0.036623">
           <joint name="wheel_front_right_right" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
           <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
         </body>
-        <body pos="0.040500 0.009890 -0.036587">
+        <body pos="0.040500 0.010000 -0.036623">
           <joint name="wheel_front_right_left" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
@@ -94,13 +94,13 @@
         <joint name="pivot_rear_right" type="hinge" axis="0 0 1"/>
         <inertial pos="0 0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
         <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 0.5 0.5"/>
-        <body pos="-0.040500 0.010108 -0.036587">
+        <body pos="-0.040500 0.010000 -0.036623">
           <joint name="wheel_rear_right_right" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
           <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 0.5 0.5"/>
         </body>
-        <body pos="0.040500 0.009890 -0.036587">
+        <body pos="0.040500 0.010000 -0.036623">
           <joint name="wheel_rear_right_left" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 0.5 0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
@@ -111,13 +111,13 @@
         <joint name="pivot_rear_left" type="hinge" axis="0 0 1"/>
         <inertial pos="0 -0.0101 0" mass="1.392" diaginertia="0.004574163 0.004344228 0.004640438"/>
         <geom type="mesh" mesh="drive" material="m_drive" quat="0.5 0.5 -0.5 -0.5"/>
-        <body pos="0.040500 -0.010108 -0.036587">
+        <body pos="0.040500 -0.010000 -0.036623">
           <joint name="wheel_rear_left_right" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_a" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
           <geom type="mesh" mesh="wheel_a" material="m_wheel" quat="0.5 0.5 -0.5 -0.5"/>
         </body>
-        <body pos="-0.040500 -0.009890 -0.036587">
+        <body pos="-0.040500 -0.010000 -0.036623">
           <joint name="wheel_rear_left_left" type="hinge" axis="-1 0 0"/>
           <inertial pos="0 0 0" mass="1.563" diaginertia="0.001579986 0.001012837 0.001013130"/>
           <geom type="mesh" mesh="tyre_b" material="m_tyre" quat="0.5 0.5 -0.5 -0.5" contype="1" conaffinity="1" friction="1 0.005 0.0001"/>
