@@ -4,7 +4,7 @@
        The meshes are CAD y-up, hence quat .5 .5 .5 .5 on every geom; the right-hand
        drive units are that same part half a turn about the pivot, hence .5 .5 -.5 -.5. -->
   <compiler angle="radian" inertiafromgeom="false" meshdir="../meshes"/>
-  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="implicitfast"/>
   <visual>
     <global offwidth="1280" offheight="720"/>
     <headlight diffuse="0.4 0.4 0.4" ambient="0.3 0.3 0.3" specular="0.2 0.2 0.2"/>
